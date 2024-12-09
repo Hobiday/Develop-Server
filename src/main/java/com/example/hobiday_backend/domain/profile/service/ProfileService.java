@@ -25,7 +25,7 @@ import static com.example.hobiday_backend.domain.perform.util.GenreCasting.getGe
 public class ProfileService {
     private final ProfileRepository profileRepository;
 
-    // 회원ID로 프로필 정보 반환..
+    // 회원ID로 프로필 정보 반환
     public ProfileResponse getProfileByMemberId(Long memberId){
         Profile profile = profileRepository.findByMemberId(memberId)
                 .orElseThrow(() ->new ProfileException(ProfileErrorCode.PROFILE_NOT_FOUND));
