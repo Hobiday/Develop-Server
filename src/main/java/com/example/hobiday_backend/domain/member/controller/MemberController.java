@@ -38,7 +38,7 @@ public class MemberController {
         return ApiResponse.success(memberService.getMemberInfoByToken(token));
     }
 
-    @Operation(summary="(개발용)기존회원 로그인", description="미리 만들어둔 회원에 로그인, 토큰 받음")
+    @Operation(summary="(개발용)기존회원 로그인", description="미리 만들어둔 회원에 로그인")
     @GetMapping("/api/test/freepass/{nickname}")
     public ApiResponse<FreePassResponse> loginFreePass(@PathVariable String nickname){
         FreePassResponse freePassResponse = memberService.loginFreePassMember(nickname);
