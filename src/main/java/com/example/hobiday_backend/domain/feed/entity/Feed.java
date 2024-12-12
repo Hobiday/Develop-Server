@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,9 +82,6 @@ public class Feed extends TimeStamped {
     public void decrementLikeCount() {
         this.likeCount--;
     }
-
-    @Column(name = "write_date", nullable = false, updatable = false)
-    private Timestamp writeDate;
 
     // 업데이트 메서드
     public void update(String content, String topic, List<String> newFileUrls, List<String> newHashTags) {
