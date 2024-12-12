@@ -68,7 +68,7 @@ public class ProfileService {
         return ProfileResponse.from(profile);
     }
 
-    // 프로필 이미지
+    // 프로필 수정
     @Transactional
     public PresignedUrlResponse updateImage(Long memberId, PreSignedUrlRequest presignedUrlRequest) {
         PresignedUrlResponse presignedUrlResponse = fileService.getUploadPresignedUrl(presignedUrlRequest.getPrefix(),

@@ -25,21 +25,6 @@ public class FeedController {
     private final MemberService memberService;
     private final FileService fileService;
 
-    // 추천순 피드 조회
-    @Operation(summary = "추천순 피드 조회 기능", description = "피드를 추천순으로 조회합니다.")
-    @GetMapping("/recommendation")
-    public ResponseEntity<List<FeedRes>> getFeedsByLikeCount() {
-        List<FeedRes> feedResList = feedService.getFeedsByLikeCount();
-        return ResponseEntity.ok(feedResList);
-    }
-
-    // 최신순 피드 조회
-    @Operation(summary = "최신순 피드 조회 기능", description = "피드를 최신순으로 조회합니다.")
-    @GetMapping("/latest")
-    public ResponseEntity<List<FeedRes>> getFeedsByLatest() {
-        List<FeedRes> feedResList = feedService.getFeedsByLatest();
-        return ResponseEntity.ok(feedResList);
-    }
 
     //파일등록 API
     @Operation(summary = "Presigned URL 요청", description = "파일 업로드를 위한 presigned URL을 생성하는 API" +
@@ -56,16 +41,34 @@ public class FeedController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "최신순 피드 조회", description = "최신순으로 모든 피드를 조회하는 API이며 요청 값으로 토큰만 받습니다" +
+            "현재 시간을 기준으로 몇분전 게시물인지도 반환")
+    @GetMapping("/feeds")
+    public ApiResponse<List<FeedRes>> getFeedsByLatest(@RequestHeader("Authorization") String token) {
+        Long userId = memberService.getMemberIdByToken(token);
+        List<FeedRes> feedsRes = feedService.getFeedsByLatest(userId);
+        return ApiResponse.success(feedsRes);
+    }
+
+    @Operation(summary = "좋아요 순 피드 조회", description = "좋아요 순으로 모든 피드를 조회하는 API이며 요청 값으로 토큰만 받습니다" +
+            "현재 시간을 기준으로 몇분전 게시물인지도 반환")
+    @GetMapping("/feeds/likes")
+    public ApiResponse<List<FeedRes>> getFeedsByLikes(@RequestHeader("Authorization") String token) {
+        Long userId = memberService.getMemberIdByToken(token);
+        List<FeedRes> feedsRes = feedService.getFeedsByLikes(userId);
+        return ApiResponse.success(feedsRes);
+    }
+
     //피드 작성
     @Operation(summary = "피드 작성", description = "요청헤더에는 토큰 // 요청바디에는 내용,주제,파일url,해시태그를 받습니다")
     @PostMapping("/feeds")
-    public ResponseEntity<ApiResponse<FeedRes>> createFeed(@RequestBody FeedReq feedReq,
-                                                           @RequestHeader("Authorization") String token) {
+    public ApiResponse<FeedRes> createFeed(@RequestBody FeedReq feedReq,
+                                           @RequestHeader("Authorization") String token) {
         // 1. 토큰을 사용해 사용자 ID 가져오기
         Long userId = memberService.getMemberIdByToken(token);
         // 2. 피드 생성
         FeedRes feedRes = feedService.createFeed(feedReq, userId);
-        return ResponseEntity.ok(ApiResponse.success(feedRes));
+        return ApiResponse.success(feedRes);
     }
 
     //피드 수정
