@@ -33,7 +33,7 @@ public class PerformController {
     @Operation(summary="전체 공연 조회(아직 프로필 선택장르 반영X)", description="전체에서 공연중을 우선 조회 |rowStart = DB시작값(0부터 시작), rowEnd = DB끝값\"")
     @GetMapping("/performs")
     public ApiResponse<List<PerformResponse>> getPerformsAll(@RequestHeader("Authorization") String token,
-                                                             @RequestBody PerformAllRequest performAllRequest){
+                                                             @RequestParam PerformAllRequest performAllRequest){
         Long memberId = memberService.getMemberIdByToken(token);
         List<String> profileGenreList = profileService.getProfileByMemberId(memberId).getProfileGenres();
         return ApiResponse.success(performService.getPerformsAll(profileGenreList, performAllRequest));
@@ -42,7 +42,7 @@ public class PerformController {
     // 장르별 공연 조회
     @Operation(summary="장르별 공연 목록 조회", description="바디에 장르명 입력 | 공연중을 우선 조회 |rowStart = DB시작값(0부터 시작), rowEnd = DB끝값")
     @GetMapping("/performs/genre")
-    public ApiResponse<List<PerformResponse>> getPerformsByGenre(@RequestBody PerformGenreRequest performGenreRequest) {
+    public ApiResponse<List<PerformResponse>> getPerformsByGenre(@RequestParam PerformGenreRequest performGenreRequest) {
         log.info("장르: " + performGenreRequest.genre);
         return ApiResponse.success(performService.getPerformListByGenre(performGenreRequest));
     }
@@ -59,7 +59,7 @@ public class PerformController {
     // 공연명으로 검색 결과 조회
     @Operation(summary="공연명으로 검색 결과 조회", description="입력한 이름을 포함하는 공연 조회 ex) 주말, 마술")
     @GetMapping("/performs/search")
-    public ApiResponse<List<PerformResponse>> getPerformsBySearch(@RequestBody PerformSearchRequest performSearchRequest) {
+    public ApiResponse<List<PerformResponse>> getPerformsBySearch(@RequestParam PerformSearchRequest performSearchRequest) {
 //        log.info("키워드: " + performSearchRequest.keyword);
         return ApiResponse.success(performService.getPerformsBySearch(performSearchRequest.keyword));
     }
