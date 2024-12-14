@@ -1,7 +1,5 @@
 package com.example.hobiday_backend.domain.perform.service;
 
-import com.example.hobiday_backend.domain.perform.dto.reqeust.PerformAllRequest;
-import com.example.hobiday_backend.domain.perform.dto.reqeust.PerformGenreRequest;
 import com.example.hobiday_backend.domain.perform.dto.response.FacilityResponse;
 import com.example.hobiday_backend.domain.perform.dto.response.PerformDetailResponse;
 import com.example.hobiday_backend.domain.perform.dto.response.PerformRecommendListResponse;
