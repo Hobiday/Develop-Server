@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,9 +31,9 @@ public class LikeController {
     @PostMapping("/{feedId}")
     public ApiResponse<LikeRes> toggleLike(
             @PathVariable Long feedId,
-            @RequestHeader String token) {
-        Long memberId = memberService.getMemberIdByToken(token);
-        LikeRes likeRes = likeService.toggleLike(feedId, memberId);
+            @RequestHeader("Authorization") String token) {
+        Long userId = memberService.getMemberIdByToken(token);
+        LikeRes likeRes = likeService.toggleLike(feedId, userId);
         return ApiResponse.success(likeRes);
     }
 }

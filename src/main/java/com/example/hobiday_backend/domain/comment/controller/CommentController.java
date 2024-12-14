@@ -9,6 +9,7 @@ import com.example.hobiday_backend.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +29,7 @@ public class CommentController {
             @RequestBody CommentReq commentReq,
             @RequestHeader("Authorization") String token) {
         Long userId = memberService.getMemberIdByToken(token);
-        Member member = memberService.findById(userId);
-        CommentRes comment = commentService.createComment(feedId, commentReq, member);
+        CommentRes comment = commentService.createComment(feedId,commentReq,userId);
         return ApiResponse.success(comment);
     }
 
@@ -47,8 +47,7 @@ public class CommentController {
             @RequestBody CommentReq commentReq,
             @RequestHeader("Authorization") String token) {
         Long userId = memberService.getMemberIdByToken(token);
-        Member member = memberService.findById(userId);
-        CommentRes updatedComment = commentService.updateComment(commentId, commentReq, member);
+        CommentRes updatedComment = commentService.updateComment(commentId, commentReq, userId);
         return ApiResponse.success(updatedComment);
     }
 
@@ -58,8 +57,7 @@ public class CommentController {
             @PathVariable Long commentId,
             @RequestHeader("Authorization") String token) {
         Long userId = memberService.getMemberIdByToken(token);
-        Member member = memberService.findById(userId);
-        commentService.deleteComment(commentId, member);
+        commentService.deleteComment(commentId, userId);
         return ApiResponse.success(null);
     }
 }

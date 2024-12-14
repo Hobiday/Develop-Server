@@ -1,9 +1,6 @@
 package com.example.hobiday_backend.domain.perform.controller;
 
 import com.example.hobiday_backend.domain.member.service.MemberService;
-import com.example.hobiday_backend.domain.perform.dto.reqeust.PerformAllRequest;
-import com.example.hobiday_backend.domain.perform.dto.reqeust.PerformGenreRequest;
-import com.example.hobiday_backend.domain.perform.dto.reqeust.PerformSearchRequest;
 import com.example.hobiday_backend.domain.perform.dto.response.FacilityResponse;
 import com.example.hobiday_backend.domain.perform.dto.response.PerformDetailResponse;
 import com.example.hobiday_backend.domain.perform.dto.response.PerformRecommendListResponse;
@@ -46,7 +43,7 @@ public class PerformController {
     public ApiResponse<List<PerformResponse>> getPerformsByGenre(@RequestParam("rowStart") String rowStart,
                                                                  @RequestParam("rowEnd") String rowEnd,
                                                                  @RequestParam("genre") String genre) {
-        log.info("장르: " + genre);
+//        log.info("장르: " + genre);
         return ApiResponse.success(performService.getPerformListByGenre(genre, rowStart, rowEnd));
     }
 
