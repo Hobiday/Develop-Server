@@ -84,5 +84,13 @@ public class PerformController {
     public ApiResponse<FacilityResponse> getFacility(@PathVariable("facilityId") String placeId){
         return ApiResponse.success(performService.getFacilityResponse(placeId));
     }
+
+    // 공연 기본&상세정보 조회
+    @Operation(summary="공연 기본&상세정보 조회", description="Kopis의 공연상세ID로 조회")
+    @GetMapping("/performs/all/{performId}")
+    public ApiResponse<PerformAllResponse> getPerformAll(@PathVariable String performId){
+        return ApiResponse.success(performService.getPerformAll(performId));
+    }
+
 }
 
