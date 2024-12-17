@@ -37,9 +37,9 @@ public class WishlistController {
 
     // 위시리스트 장르별 조회
     @Operation(summary="장르별 조회", description="장르별 조회는 몇개 안되니 전부 응답")
-    @GetMapping("/wishlist/{genre}")
+    @GetMapping("/wishlist/genre")
     public ApiResponse<List<WishResponse>> getWishlistByGenre(@RequestHeader("Authorization") String token,
-                                                       @PathVariable String genre) {
+                                                              @RequestParam("genre") String genre) {
         return ApiResponse.success(wishlistService.getWishlistByGenre(getProfileIdByToken(token), genre));
     }
 

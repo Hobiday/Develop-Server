@@ -19,7 +19,7 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
     @Query("select w " +
             "from Wishlist w " +
-            "where w.profileId = :profileId and w.genre like concat('%', :genre, '%') " +
+            "where w.genre like concat('%', :genre, '%') and w.profileId = :profileId " +
             "order by w.modifiedTime desc ")
     Optional<List<Wishlist>> findWishListByGenre(Long profileId, String genre);
 }

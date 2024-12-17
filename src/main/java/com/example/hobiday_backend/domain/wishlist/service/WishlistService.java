@@ -39,6 +39,9 @@ public class WishlistService {
     public List<WishResponse> getWishlistByGenre(Long profileId, String genre) {
         List<Wishlist> wishlists = wishlistRepository.findWishListByGenre(profileId, genre)
                 .orElseThrow(() -> new WishlistException(WishlistErrorCode.WISH_NOT_FOUND));
+        if (wishlists.isEmpty()){
+            throw new WishlistException(WishlistErrorCode.WISH_NOT_FOUND);
+        }
         return wishlists.stream()
                 .map(WishResponse::new)
                 .toList();
