@@ -1,8 +1,10 @@
 package com.example.hobiday_backend.domain.wishlist.dto;
 
 import com.example.hobiday_backend.domain.wishlist.entity.Wishlist;
+import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
 public class WishResponse {
     private Long wishId;
