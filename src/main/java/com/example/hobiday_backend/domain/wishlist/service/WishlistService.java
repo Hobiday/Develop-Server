@@ -67,7 +67,7 @@ public class WishlistService {
                 .poster(perform.getPoster())
                 .build());
         perform.wishUp();
-        return new WishMessageResponse("위시 등록 성공", perform.getGenrenm());
+        return new WishMessageResponse("위시 등록 성공", perform.getPrfnm());
     }
 
     // 위시 해제
@@ -79,6 +79,6 @@ public class WishlistService {
                         .orElseThrow(() -> new WishlistException(WishlistErrorCode.WISH_NOT_FOUND));
         wishlistRepository.delete(wishlist);
         perform.wishDown();
-        return new WishMessageResponse("위시 해제 성공", perform.getGenrenm());
+        return new WishMessageResponse("위시 해제 성공", perform.getPrfnm());
     }
 }
