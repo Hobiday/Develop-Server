@@ -48,6 +48,9 @@ public class ProfileService {
                              AddProfileRequest addProfileRequest){
 //        String email = userRepository.findById(userId).get().getEmail(); //방1
         String email = member.getEmail(); //방2
+        if(profileRepository.findByMemberId(member.getId()).isPresent()){
+            throw new ProfileException(ProfileErrorCode.PROFILE_CONFLICT);
+        }
 //        log.info("dto 장르: " + addProfileRequest.profileGenre);
         Profile profile = profileRepository.save(Profile.builder()
 //                .userId(userId) //방1

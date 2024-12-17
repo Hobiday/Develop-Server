@@ -76,7 +76,7 @@ public class PerformService {
                 .openRun(perform.getOpenrun())
                 .area(perform.getArea())
                 .poster(perform.getPoster())
-                .likeCount(perform.getLikeCount())
+                .wishCount(perform.getWishCount())
                 .build();
     }
 
@@ -121,7 +121,7 @@ public class PerformService {
                 .openRun(perform.getOpenrun())
                 .area(perform.getArea())
                 .poster(perform.getPoster())
-                .likeCount(perform.getLikeCount())
+                .wishCount(perform.getWishCount())
                 .performId(performDetail.getMt20id())
                 .facilityId(performDetail.getMt10id())
                 .cast(performDetail.getPrfcast())
@@ -157,14 +157,6 @@ public class PerformService {
 //                .toList();
 //    }
 
-//    // 홈화면 추천 공연 6개 | 현재 랜덤
-//    public List<PerformResponse> getMainPerforms(/*List<String> profileGenreList*/) {
-//        List<Perform> performList = performRepository.findAllByRand().
-//            orElseThrow(() -> new PerformException(PerformErrorCode.PERFORM_NOT_FOUND));
-//        return performList.stream()
-//                .map(PerformResponse::new)
-//                .toList();
-//    }
 
     // 모든 장르 조회
     public List<PerformResponse> getPerformsAll(List<String> profileGenreList, String rowStart, String rowEnd){
