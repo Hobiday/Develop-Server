@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
         name = "Wishlist",
         uniqueConstraints={ // 복합키 설정 (중복 저장 불가)
         @UniqueConstraint(
-                columnNames={"profileId", "mt20id"}
+                columnNames={"profile_id", "mt20id"}
         )
 })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
