@@ -77,11 +77,6 @@ public class ProfileService {
         PresignedUrlResponse presignedUrlResponse = fileService.getUploadPresignedUrl(presignedUrlRequest.getPrefix(),
                 presignedUrlRequest.getFileName());
 
-        String saveUrl = presignedUrlResponse.getUrl().split("\\?")[0];
-        Profile profile = profileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new ProfileException(ProfileErrorCode.PROFILE_NOT_FOUND));
-        profile.updateImage(saveUrl);
-
         return presignedUrlResponse;
     }
 

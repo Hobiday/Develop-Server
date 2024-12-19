@@ -83,8 +83,8 @@ public class Profile {
         if(updateProfileRequest.getProfileIntroduction()!=null){
             this.profileIntroduction = updateProfileRequest.getProfileIntroduction();
         }
-        if(updateProfileRequest.getProfileImageUrl()!=null){
-            this.profileImageUrl = updateProfileRequest.getProfileImageUrl();
+        if(updateProfileRequest.getProfileImageFilePath()!=null){
+            this.profileImageUrl = "https://d3squc7td61jc2.cloudfront.net/" + updateProfileRequest.getProfileImageFilePath();
         }
     }
 }
