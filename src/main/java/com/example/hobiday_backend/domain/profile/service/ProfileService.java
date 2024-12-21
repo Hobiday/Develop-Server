@@ -33,6 +33,8 @@ public class ProfileService {
         return ProfileResponse.from(profile);
     }
 
+    // 프로필ID로 프로필 조회
+
     // 닉네임 중복 여부
     public ProfileMessageResponse isNicknameOverlap(String nickname){
         if (profileRepository.findByProfileNickname(nickname).isPresent()) { // 존재하는 닉네임이면
