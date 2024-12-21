@@ -1,5 +1,7 @@
 package com.example.hobiday_backend.domain.profile.service;
 
+import com.example.hobiday_backend.domain.feed.repository.FeedRepository;
+import com.example.hobiday_backend.domain.follow.repository.FollowRepository;
 import com.example.hobiday_backend.domain.member.entity.Member;
 import com.example.hobiday_backend.domain.profile.dto.request.AddProfileRequest;
 import com.example.hobiday_backend.domain.profile.dto.request.UpdateProfileRequest;
@@ -25,19 +27,27 @@ import static com.example.hobiday_backend.domain.perform.util.GenreCasting.getGe
 public class ProfileService {
     private final ProfileRepository profileRepository;
     private final FileService fileService;
+    private final FeedRepository feedRepository;
+    private final FollowRepository followRepository;
 
     // 회원ID로 프로필 정보 반환
     public ProfileResponse getProfileByMemberId(Long memberId){
         Profile profile = profileRepository.findByMemberId(memberId)
                 .orElseThrow(() ->new ProfileException(ProfileErrorCode.PROFILE_NOT_FOUND));
-        return ProfileResponse.from(profile);
+        int totalFeedCount = feedRepository.countByProfile(profile);
+        int followerCount = followRepository.countByFollowing(profile);
+        int followingCount = followRepository.countByFollower(profile);
+        return ProfileResponse.of(profile, totalFeedCount, followerCount, followingCount);
     }
 
     // 프로필ID로 프로필 조회
     public ProfileResponse getProfileByProfileId(Long profileId){
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() ->new ProfileException(ProfileErrorCode.PROFILE_NOT_FOUND));
-        return ProfileResponse.from(profile);
+        int totalFeedCount = feedRepository.countByProfile(profile);
+        int followerCount = followRepository.countByFollowing(profile);
+        int followingCount = followRepository.countByFollower(profile);
+        return ProfileResponse.of(profile, totalFeedCount, followerCount, followingCount);
     }
 
     // 닉네임 중복 여부
