@@ -7,15 +7,14 @@ import com.example.hobiday_backend.domain.perform.entity.PerformDetail;
 import com.example.hobiday_backend.domain.perform.exception.PerformErrorCode;
 import com.example.hobiday_backend.domain.perform.exception.PerformException;
 import com.example.hobiday_backend.domain.perform.repository.FacilityRepository;
+import com.example.hobiday_backend.domain.perform.repository.PerformCustomRepositoryImpl;
 import com.example.hobiday_backend.domain.perform.repository.PerformDetailRepository;
 import com.example.hobiday_backend.domain.perform.repository.PerformRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 @Slf4j
@@ -25,10 +24,11 @@ public class PerformService {
     private final PerformRepository performRepository;
     private final PerformDetailRepository performDetailRepository;
     private final FacilityRepository facilityRepository;
+    private final PerformCustomRepositoryImpl performCustomRepositoryImpl;
 
 
     // 모든 장르 조회: 공연 시작순
-    public List<PerformResponse> getPerformsAll(List<String> profileGenreList, String rowStart, String rowEnd){
+    public List<PerformResponse> getPerformsAll(String rowStart, String rowEnd){
         int start = Integer.parseInt(rowStart);
         int end = Integer.parseInt(rowEnd);
         List<Perform> performList = performRepository.findAllBySelect(end - start + 1, start)
@@ -39,7 +39,7 @@ public class PerformService {
     }
 
     // 모든 장르 조회: 공연종료 임박순
-    public List<PerformResponse> getPerformsAllDeadline(List<String> profileGenreList, String rowStart, String rowEnd){
+    public List<PerformResponse> getPerformsAllDeadline(String rowStart, String rowEnd){
         int start = Integer.parseInt(rowStart);
         int end = Integer.parseInt(rowEnd);
         List<Perform> performList = performRepository.findAllBySelectDeadline(end - start + 1, start)
@@ -163,30 +163,49 @@ public class PerformService {
     public List<PerformRecommendListResponse> getPerformsByRecommends(List<String> profileGenreList) {
 
         // 선택한 장르를 한번씩 돌아가며 리스트 10개 채워놓음
-        int i = 0;
-        int iniSize = profileGenreList.size();
-        while (profileGenreList.size() != 10){
-            profileGenreList.add(profileGenreList.get(i++));
-            if (i==iniSize) i = 0;
-        }
-
-//        log.info("프로필장르리스트: " + profileGenreList);
-
-        // 응답할 공연 10개 꺼내오기
-        int cnt = 0;
-        List<Perform> performList = new ArrayList<>();
-        List<Perform> perform;
-        while (cnt!=10){
-            perform = performRepository.findBySelectGenre(profileGenreList.get(cnt), cnt)
-                    .orElseThrow(() -> new PerformException(PerformErrorCode.PERFORM_NOT_FOUND));
-            performList.addAll(perform);
-            cnt++;
-        }
+//        int i = 0;
+//        int iniSize = profileGenreList.size();
+//        while (profileGenreList.size() != 10){
+//            profileGenreList.add(profileGenreList.get(i++));
+//            if (i==iniSize) i = 0;
+//        }
+//
+////        log.info("프로필장르리스트: " + profileGenreList);
+//
+//        // 응답할 공연 10개 꺼내오기
+//        int cnt = 0;
+//        List<Perform> performList = new ArrayList<>();
+//        List<Perform> perform;
+//        while (cnt!=10){
+//            perform = performRepository.findBySelectGenre(profileGenreList.get(cnt), cnt)
+//                    .orElseThrow(() -> new PerformException(PerformErrorCode.PERFORM_NOT_FOUND));
+//            performList.addAll(perform);
+//            cnt++;
+//        }
+        List<Perform> performList = performCustomRepositoryImpl.findTenBySelectGenre(profileGenreList);
 
         return performList.stream()
                 .map(PerformRecommendListResponse::new)
                 .toList();
     }
+
+    // 키워드, 지역들, 장르들 검색
+    public List<PerformResponse> getPerformsBySearchDetails(String keyword, List<String> genres, List<String> areas) {
+        List<Perform> performList = performCustomRepositoryImpl.findAllBySelectAreaAndGenre(keyword, genres, areas);
+//        for(Perform perform : performList){
+//            log.info("공연 정보: {} | {} | {}", perform.getPrfnm(), perform.getGenrenm(), perform.getArea());
+//        }
+
+        return performList.stream()
+                .map(PerformResponse::new)
+                .toList();
+    }
+
+//    public List<Perform> findAllBySelectAreaAndGenre(final String genre, final String area) {
+//        return queryFactory
+//                .selectfrom(Perform)
+//    }
+
 
     // 모든 장르로 조회
 //    public List<PerformResponse> getPerformsAll() {

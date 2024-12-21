@@ -24,14 +24,14 @@ public class PerformController {
     private final ProfileService profileService;
 
     // 전체 공연 조회
-    @Operation(summary="전체 공연 조회(아직 프로필 선택장르 반영X)", description="전체에서 공연중을 우선 조회 |rowStart = DB시작값(0부터 시작), rowEnd = DB끝값\"")
+    @Operation(summary="전체 공연 조회(공연시작일 빠를수록)", description="전체에서 공연중을 우선 조회 |rowStart = DB시작값(0부터 시작), rowEnd = DB끝값\"")
     @GetMapping("/performs")
     public ApiResponse<List<PerformResponse>> getPerformsAll(@RequestHeader("Authorization") String token,
-                                                             @RequestParam("rowStart") String rowStart,
-                                                             @RequestParam("rowEnd") String rowEnd){
-        Long memberId = memberService.getMemberIdByToken(token);
-        List<String> profileGenreList = profileService.getProfileByMemberId(memberId).getProfileGenres();
-        return ApiResponse.success(performService.getPerformsAll(profileGenreList, rowStart, rowEnd));
+                                                             @RequestParam String rowStart,
+                                                             @RequestParam String rowEnd){
+//        Long memberId = memberService.getMemberIdByToken(token);
+//        List<String> profileGenreList = profileService.getProfileByMemberId(memberId).getProfileGenres();
+        return ApiResponse.success(performService.getPerformsAll(rowStart, rowEnd));
     }
 
     // 전체 공연 조회2
@@ -40,18 +40,17 @@ public class PerformController {
     public ApiResponse<List<PerformResponse>> getPerformsAllDeadline(@RequestHeader("Authorization") String token,
                                                                      @RequestParam String rowStart,
                                                                      @RequestParam String rowEnd){
-        Long memberId = memberService.getMemberIdByToken(token);
-        List<String> profileGenreList = profileService.getProfileByMemberId(memberId).getProfileGenres();
-        return ApiResponse.success(performService.getPerformsAllDeadline(profileGenreList, rowStart, rowEnd));
+//        Long memberId = memberService.getMemberIdByToken(token);
+//        List<String> profileGenreList = profileService.getProfileByMemberId(memberId).getProfileGenres();
+        return ApiResponse.success(performService.getPerformsAllDeadline(rowStart, rowEnd));
     }
 
     // 장르별 공연 조회
     @Operation(summary="장르별 공연 목록 조회", description="바디에 장르명 입력 | 공연중을 우선 조회 |rowStart = DB시작값(0부터 시작), rowEnd = DB끝값")
     @GetMapping("/performs/genre")
-    public ApiResponse<List<PerformResponse>> getPerformsByGenre(@RequestParam("rowStart") String rowStart,
-                                                                 @RequestParam("rowEnd") String rowEnd,
-                                                                 @RequestParam("genre") String genre) {
-//        log.info("장르: " + genre);
+    public ApiResponse<List<PerformResponse>> getPerformsByGenre(@RequestParam String rowStart,
+                                                                 @RequestParam String rowEnd,
+                                                                 @RequestParam String genre) {
         return ApiResponse.success(performService.getPerformListByGenre(genre, rowStart, rowEnd));
     }
 
@@ -64,10 +63,20 @@ public class PerformController {
         return ApiResponse.success(performService.getPerformsByRecommends(profileGenreList));
     }
 
+    // 공연 상세 검색 조회
+    @Operation(summary="공연 상세 검색",description="쿼리파라미터에 검색어, 장르들, 지역들 | 설명은 서버알림방" )
+    @GetMapping("/performs/search/detail")
+    public ApiResponse<List<PerformResponse>> getPerformsBySearchDetails(@RequestParam String keyword,
+                                                                         @RequestParam List<String> genres,
+                                                                         @RequestParam List<String> areas){
+
+        return ApiResponse.success(performService.getPerformsBySearchDetails(keyword, genres, areas));
+    }
+
     // 공연명으로 검색 결과 조회
     @Operation(summary="공연명으로 검색 결과 조회", description="입력한 이름을 포함하는 공연 조회 ex) 주말, 마술")
     @GetMapping("/performs/search")
-    public ApiResponse<List<PerformResponse>> getPerformsBySearch(@RequestParam("keyword") String keyword) {
+    public ApiResponse<List<PerformResponse>> getPerformsBySearch(@RequestParam String keyword) {
 //        log.info("키워드: " + performSearchRequest.keyword);
         return ApiResponse.success(performService.getPerformsBySearch(keyword));
     }
@@ -82,7 +91,7 @@ public class PerformController {
     // 공연 상세정보 조회
     @Operation(summary="공연 상세정보 조회", description="Kopis의 공연상세ID로 조회")
     @GetMapping("/performs/perform/{performId}")
-    public ApiResponse<PerformDetailResponse> getPerformDetail(@PathVariable String performId){
+    public ApiResponse<PerformDetailResponse> getPerformDetail(@PathVariable("performId") String performId){
         return ApiResponse.success(performService.getPerformDetailResponse(performId));
     }
 
@@ -99,6 +108,4 @@ public class PerformController {
     public ApiResponse<PerformAllResponse> getPerformAll(@PathVariable String performId){
         return ApiResponse.success(performService.getPerformAll(performId));
     }
-
 }
-

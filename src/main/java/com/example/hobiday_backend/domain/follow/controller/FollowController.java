@@ -1,53 +1,55 @@
 package com.example.hobiday_backend.domain.follow.controller;
 
+import com.example.hobiday_backend.domain.follow.dto.response.FollowMessageResponse;
+import com.example.hobiday_backend.domain.follow.dto.response.FollowResponse;
 import com.example.hobiday_backend.domain.follow.service.FollowService;
-import com.example.hobiday_backend.global.jwt.TokenProvider;
+import com.example.hobiday_backend.domain.member.service.MemberService;
+import com.example.hobiday_backend.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
+@Tag(name = "Follow", description = "팔로우 관련 API") // 전체 컨트롤러 설명
 public class FollowController {
     private final FollowService followService;
-    private final TokenProvider tokenProvider;
+    private final MemberService memberService;
 
-    @Operation(summary = "팔로우 기능", description = "사용자가 로그인 후 받은 인증 토큰과 팔로우 하고자 하는 사용자의 id를 전달하여 해당 사용자를 팔로우 합니다.")
-    @GetMapping("/follow")
-    public ResponseEntity<String>  follow(@RequestParam(value = "token")
-                                          @Parameter(description = "사용자 인증 토큰", required = true) String token,
-                                          @RequestParam
-                                          @Parameter(description = "팔로우 할 사용자의 id", required = true) Long followingId) {
-
-        Long followerId = tokenProvider.getMemberId(token);
-
-        try {
-            followService.follow(followingId, followerId);
-            return ResponseEntity.ok().body("success");
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body("fail");
-        }
+    @PostMapping("/profiles/follow")
+    @Operation(
+            summary = "팔로우/언팔로우 토글",
+            description = "사용자가 다른 사용자를 팔로우하거나 이미 팔로우한 상태라면 언팔로우합니다."
+    )
+    public ApiResponse<FollowMessageResponse> toggleFollow(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("targetProfileId") Long targetProfileId) {
+        return ApiResponse.success(followService.toggleFollow(token, targetProfileId));
     }
 
-//    @Operation(summary = "언팔로우 기능", description = "사용자가 로그인 후 받은 인증 토큰과 언팔로우 하고자 하는 사용자의 id를 전달하여 해당 사용자를 언팔로우 합니다.")
-//    @DeleteMapping("/unfollow")
-//    public ResponseEntity<String> unfollow(@RequestParam(value = "token")
-//                                           @Parameter(description = "사용자 인증 토큰", required = true) String token,
-//                                           @RequestParam
-//                                           @Parameter(description = "언팔로우 할 사용자의 id", required = true) Long followingId) {
-//
-//        Long followerId = tokenProvider.getMemberId(token);
-//
-//        try {
-//            followService.unfollow(followingId, followerId);
-//            return ResponseEntity.ok().body("success");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(400).body("fail");
-//        }
-//    }
+    // 팔로잉 목록 조회
+    @GetMapping("/profiles/{profileId}/following")
+    @Operation(
+            summary = "팔로잉 목록 조회",
+            description = "특정 사용자가 팔로우하고 있는 사용자 목록을 조회합니다."
+    )
+    public ApiResponse<List<FollowResponse>> getFollowingList(@PathVariable Long profileId) {
+        List<FollowResponse> followingList = followService.getFollowingList(profileId);
+        return ApiResponse.success(followingList);
+    }
 
+    // 팔로워 목록 조회
+    @GetMapping("/profiles/{profileId}/followers")
+    @Operation(
+            summary = "팔로워 목록 조회",
+            description = "특정 사용자를 팔로우하고 있는 사용자 목록을 조회합니다."
+    )
+    public ApiResponse<List<FollowResponse>> getFollowerList(@PathVariable Long profileId) {
+        List<FollowResponse> followerList = followService.getFollowerList(profileId);
+        return ApiResponse.success(followerList);
+    }
 }
