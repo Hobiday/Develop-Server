@@ -34,6 +34,11 @@ public class ProfileService {
     }
 
     // 프로필ID로 프로필 조회
+    public ProfileResponse getProfileByProfileId(Long profileId){
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() ->new ProfileException(ProfileErrorCode.PROFILE_NOT_FOUND));
+        return ProfileResponse.from(profile);
+    }
 
     // 닉네임 중복 여부
     public ProfileMessageResponse isNicknameOverlap(String nickname){
@@ -75,7 +80,7 @@ public class ProfileService {
 
     // 프로필 수정
     @Transactional
-    public PresignedUrlResponse updateImage(Long memberId, PreSignedUrlRequest presignedUrlRequest) {
+    public PresignedUrlResponse updateImage(PreSignedUrlRequest presignedUrlRequest) {
         PresignedUrlResponse presignedUrlResponse = fileService.getUploadPresignedUrl(presignedUrlRequest.getPrefix(),
                 presignedUrlRequest.getFileName());
 
