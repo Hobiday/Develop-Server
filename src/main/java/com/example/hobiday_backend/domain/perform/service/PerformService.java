@@ -14,6 +14,7 @@ import com.example.hobiday_backend.domain.perform.repository.FacilityRepository;
 import com.example.hobiday_backend.domain.perform.repository.PerformCustomRepositoryImpl;
 import com.example.hobiday_backend.domain.perform.repository.PerformDetailRepository;
 import com.example.hobiday_backend.domain.perform.repository.PerformRepository;
+import com.example.hobiday_backend.domain.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class PerformService {
     private final PerformCustomRepositoryImpl performCustomRepositoryImpl;
     private final FeedRepository feedRepository;
     private final FeedService feedService;
+    private final WishlistRepository wishlistRepository;
 
 
     // 모든 장르 조회: 공연 시작순
@@ -90,12 +92,11 @@ public class PerformService {
     }
 
     // 공연상세 조회
-    public PerformDetailResponse getPerformDetailResponse(String mt20id) {
+    public PerformDetailResponse getPerformDetailResponse(String mt20id, Long profileId) {
         PerformDetail performDetail = performDetailRepository.findByMt20id(mt20id)
                 .orElseThrow(() -> new PerformException(PerformErrorCode.PERFORM_NOT_FOUND));
         Perform perform = performRepository.findByMt20id(mt20id)
                 .orElseThrow(() -> new PerformException(PerformErrorCode.PERFORM_NOT_FOUND));
-
 
         return PerformDetailResponse.builder()
                 .performId(performDetail.getMt20id())
@@ -109,6 +110,7 @@ public class PerformService {
                 .reservationChannel(performDetail.getRelatenm())
                 .reservationUrl(performDetail.getRelateurl())
                 .feedCount(feedRepository.countByPerform(perform))
+                .isWished(wishlistRepository.existsByProfileIdAndMt20id(profileId, mt20id))
                 .build();
     }
 
@@ -138,7 +140,9 @@ public class PerformService {
                 .toList();
     }
 
-    public PerformAllResponse getPerformAll(String mt20id) {
+
+    // 공연 모두 반환
+    public PerformAllResponse getPerformAll(String mt20id, Long profileId) {
         Perform perform = performRepository.findByMt20id(mt20id)
                 .orElseThrow(() -> new PerformException(PerformErrorCode.PERFORM_NOT_FOUND));
 
@@ -168,6 +172,7 @@ public class PerformService {
                 .reservationChannel(performDetail.getRelatenm())
                 .reservationUrl(performDetail.getRelateurl())
                 .feedCount(feedRepository.countByPerform(perform))
+                .isWished(wishlistRepository.existsByProfileIdAndMt20id(profileId, mt20id))
                 .build();
     }
 
