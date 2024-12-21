@@ -1,6 +1,9 @@
 package com.example.hobiday_backend.domain.perform.service;
 
+import com.example.hobiday_backend.domain.feed.dto.FeedRes;
+import com.example.hobiday_backend.domain.feed.entity.Feed;
 import com.example.hobiday_backend.domain.feed.repository.FeedRepository;
+import com.example.hobiday_backend.domain.feed.service.FeedService;
 import com.example.hobiday_backend.domain.perform.dto.response.*;
 import com.example.hobiday_backend.domain.perform.entity.FacilityDetail;
 import com.example.hobiday_backend.domain.perform.entity.Perform;
@@ -15,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,6 +31,7 @@ public class PerformService {
     private final FacilityRepository facilityRepository;
     private final PerformCustomRepositoryImpl performCustomRepositoryImpl;
     private final FeedRepository feedRepository;
+    private final FeedService feedService;
 
 
     // 모든 장르 조회: 공연 시작순
@@ -208,10 +213,17 @@ public class PerformService {
                 .toList();
     }
 
-//    public List<Perform> findAllBySelectAreaAndGenre(final String genre, final String area) {
-//        return queryFactory
-//                .selectfrom(Perform)
-//    }
+    // 공연 연결 피드 조회
+    public List<FeedRes> getFeedsByPerformId(String performId) {
+        Perform perform = performRepository.findByMt20id(performId)
+                .orElseThrow(() -> new PerformException(PerformErrorCode.PERFORM_NOT_FOUND));
+        List<Feed> feeds = feedRepository.findAllByPerformOrderByCreatedTimeDesc(perform);
+        List<FeedRes> feedResList = new ArrayList<>();
+        for (Feed feed : feeds) {
+            feedResList.add(feedService.getFeedById(feed.getId()));
+        }
+        return feedResList;
+    }
 
 
     // 모든 장르로 조회
