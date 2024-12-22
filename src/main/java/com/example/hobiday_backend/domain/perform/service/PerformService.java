@@ -199,7 +199,7 @@ public class PerformService {
 //            performList.addAll(perform);
 //            cnt++;
 //        }
-        List<Perform> performList = performCustomRepositoryImpl.findTenBySelectGenre(profileGenreList);
+        List<Perform> performList = performCustomRepositoryImpl.findTenByProfileGenre(profileGenreList);
 
         return performList.stream()
                 .map(PerformRecommendListResponse::new)

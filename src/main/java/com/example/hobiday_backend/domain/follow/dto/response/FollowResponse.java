@@ -8,6 +8,7 @@ public class FollowResponse {
     private Long profileId;
     private String profileNickName;
     private String profileImageUrl;
+    private String profileIntroduction;
     private boolean isFollowing;
 
     // 생성자 추가
@@ -15,6 +16,7 @@ public class FollowResponse {
         this.profileId = profile.getId();
         this.profileNickName = profile.getProfileNickname();
         this.profileImageUrl = profile.getProfileImageUrl();
+        this.profileIntroduction = profile.getProfileIntroduction();
         this.isFollowing = isFollowing;
     }
 }
